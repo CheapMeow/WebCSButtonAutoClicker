@@ -10,6 +10,27 @@
 
 Edge 只有在启动时带了 `--remote-debugging-port` 才允许这种连接，因此需要用本工具的 `launch-edge` 启动一个专用 Edge 窗口（独立的 `--user-data-dir`，不影响你日常使用的 Edge）。
 
+### 从 `page.mouse.click` 到 CDP 命令
+
+代码里直接写的是 Playwright 的高层 API（[`src/button_auto_clicker/clicker.py:83`](src/button_auto_clicker/clicker.py)）：
+
+```python
+page.mouse.move(x, y)
+page.mouse.click(x, y)
+```
+
+`Input.dispatchMouseEvent` 是这两行最终发出的协议命令，中间隔着三层：
+
+| 层 | 位置 | 做的事 |
+| --- | --- | --- |
+| Python API | `playwright/_impl/_input.py` | `move` 发出通道命令 `mouseMove`，`click` 发出 `mouseClick`，只传参数，不发协议包 |
+| Node 驱动 | Playwright 自带驱动里的 `RawMouseImpl` | 把通道命令翻译成 `Input.dispatchMouseEvent`：移动是 `type: "mouseMoved"`，按下是 `mousePressed`，抬起是 `mouseReleased` |
+| 浏览器 | Edge 的渲染进程 | 通过页面自己的 CDP 会话收到命令并派发输入事件 |
+
+一次点击在驱动里展开成 `move` + `down` + `up`，所以实际是三条 `Input.dispatchMouseEvent`。命中测试的 `page.evaluate` 走的是同一条 CDP 连接，只是用的是 Runtime 域。整个过程中事件由渲染进程直接接收，不经过窗口焦点，因此点击发生在后台。
+
+`Page` 类型来自 `from playwright.sync_api import Page`，只用于类型标注；真正的页面对象由 `connect_over_cdp` 得到。
+
 ## 安装
 
 ```powershell
