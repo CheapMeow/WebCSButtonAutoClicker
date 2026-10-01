@@ -1,0 +1,11 @@
+.venv/
+.edge-profile/
+.edge-profile-test/
+build/
+dist/
+*.egg-info/
+__pycache__/
+.pytest_cache/
+*.spec
+config.local.json
+scratch/

@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "button-auto-clicker"
+version = "0.1.0"
+description = "在后台检测并点击目标网页里配置好的按钮，不抢占 Edge 窗口焦点"
+requires-python = ">=3.9"
+dependencies = [
+    "playwright>=1.40",
+]
+
+[project.scripts]
+button-clicker = "button_auto_clicker.cli:main"
+
+[tool.setuptools]
+packages = ["button_auto_clicker"]
+package-dir = { "" = "src" }

@@ -1,0 +1,11 @@
+{
+  "target_url": "https://example.com/#/page",
+  "primary_button_text": "第一个按钮的文字",
+  "button_sequence": ["第一个按钮的文字", "第二个按钮的文字"],
+  "end_texts": ["第一个按钮的文字", "第二个按钮的文字"],
+  "url_marker": "",
+  "cdp_port": 9222,
+  "edge_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+  "edge_user_data_dir": ".edge-profile",
+  "poll_interval_seconds": 1.0
+}
